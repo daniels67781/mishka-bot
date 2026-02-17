@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розыгрыш мишки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .bear-emoji {
+            font-size: 80px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.1));
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .attempts-counter {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 16px rgba(245, 87, 108, 0.3);
+        }
+
+        .attempts-number {
+            font-size: 36px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .attempts-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .bear-image {
+            font-size: 120px;
+            margin-bottom: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .start-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-btn.discount {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            color: #ff6b6b;
+        }
+
+        .action-btn .label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .promo-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .promo-input {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .promo-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .promo-input input:focus {
+            border-color: #667eea;
+        }
+
+        .promo-input button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .promo-message {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .support-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 320px;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .result-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .result-text {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="bear-emoji">🐻</div>
+            <h1>Мишка бот</h1>
+            <div class="subtitle">Выиграй меня!</div>
+        </div>
+
+        <div class="attempts-counter">
+            <div class="attempts-number" id="attemptsCount">15</div>
+            <div class="attempts-label">осталось попыток</div>
+        </div>
+
+        <div class="game-section">
+            <div class="bear-image" id="bearImage">🐻</div>
+            <button class="start-btn" id="startBtn">Крутить!</button>
+        </div>
+
+        <div class="actions-grid">
+            <button class="action-btn" id="freeSpinBtn">
+                <span>🆓</span> Крутить бесплатно
+                <span class="label">каждые 24ч</span>
+            </button>
+            <button class="action-btn discount" id="discountSpinBtn">
+                <span>🔥</span> Крутить за 70%
+                <span class="label">скидка</span>
+            </button>
+        </div>
+
+        <div class="promo-section">
+            <div class="promo-input">
+                <input type="text" id="promoCode" placeholder="Введите промокод">
+                <button id="applyPromo">OK</button>
+            </div>
+            <div class="promo-message" id="promoMessage">
+                Введите промокод для получения дополнительных попыток
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <button class="support-btn" onclick="showSupport()">Техподдержка</button>
+            <button class="support-btn" onclick="showRules()">Правила</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для результатов -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-title" id="resultTitle">Поздравляем!</div>
+            <div class="result-text" id="resultText">Вы выиграли мишку!</div>
+            <button class="close-btn" onclick="closeModal()">Отлично!</button>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand(); // Разворачиваем на весь экран
+            tg.ready();
+        }
+
+        // Состояние приложения
+        let attempts = 15;
+        let lastFreeSpinDate = null;
+
+        // Элементы DOM
+        const attemptsElement = document.getElementById('attemptsCount');
+        const startBtn = document.getElementById('startBtn');
+        const freeSpinBtn = document.getElementById('freeSpinBtn');
+        const discountSpinBtn = document.getElementById('discountSpinBtn');
+        const promoInput = document.getElementById('promoCode');
+        const promoMessage = document.getElementById('promoMessage');
+        const bearImage = document.getElementById('bearImage');
+        const modal = document.getElementById('resultModal');
+        const resultIcon = document.getElementById('resultIcon');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultText = document.getElementById('resultText');
+
+        // Обновление отображения попыток
+        function updateAttemptsDisplay() {
+            attemptsElement.textContent = attempts;
+        }
+
+        // Показать результат
+        function showResult(win, prize = null) {
+            if (win) {
+                resultIcon.textContent = '🎉';
+                resultTitle.textContent = 'Поздравляем!';
+                resultText.textContent = prize || 'Вы выиграли милого плюшевого мишку! 🐻';
+                
+                // Анимация мишки
+                bearImage.style.animation = 'none';
+                bearImage.offsetHeight;
+                bearImage.style.animation = 'float 3s ease-in-out infinite';
+                bearImage.textContent = '🎁';
+                setTimeout(() => {
+                    bearImage.textContent = '🐻';
+                }, 1000);
+            } else {
+                resultIcon.textContent = '😢';
+                resultTitle.textContent = 'Повезет в следующий раз!';
+                resultText.textContent = 'Попробуйте еще раз!';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        // Закрыть модальное окно
+        window.closeModal = function() {
+            modal.classList.remove('active');
+        };
+
+        // Основная функция крутки
+        function spin() {
+            if (attempts <= 0) {
+                showResult(false, 'У вас закончились попытки!');
+                return false;
+            }
+
+            attempts--;
+            updateAttemptsDisplay();
+
+            // 10% шанс на выигрыш
+            const isWin = Math.random() < 0.1;
+            
+            if (isWin) {
+                showResult(true);
+            } else {
+                showResult(false);
+            }
+
+            return true;
+        }
+
+        // Обработчики кнопок
+        startBtn.addEventListener('click', () => {
+            spin();
+        });
+
+        freeSpinBtn.addEventListener('click', () => {
+            const today = new Date().toDateString();
+            
+            if (lastFreeSpinDate === today) {
+                showResult(false, 'Бесплатную крутку можно получить раз в 24 часа!');
+                return;
+            }
+
+            attempts += 1;
+            lastFreeSpinDate = today;
+            updateAttemptsDisplay();
+            promoMessage.textContent = '✅ Бесплатная попытка активирована!';
+            promoMessage.style.color = '#4caf50';
+        });
+
+        discountSpinBtn.addEventListener('click', () => {
+            // Здесь должна быть интеграция с платежной системой Telegram Stars
+            if (tg) {
+                tg.showPopup({
+                    title: 'Покупка попытки',
+                    message: 'Купить попытку со скидкой 70% за 3 звезды?',
+                    buttons: [
+                        {id: 'buy', type: 'default', text: 'Купить'},
+                        {id: 'cancel', type: 'cancel', text: 'Отмена'}
+                    ]
+                }, (buttonId) => {
+                    if (buttonId === 'buy') {
+                        // Здесь будет вызов платежной системы
+                        attempts += 1;
+                        updateAttemptsDisplay();
+                        showResult(true, 'Попытка успешно куплена!');
+                    }
+                });
+            } else {
+                alert('Демо-режим: попытка куплена!');
+                attempts += 1;
+                updateAttemptsDisplay();
+            }
+        });
+
+        // Промокоды
+        document.getElementById('applyPromo').addEventListener('click', () => {
+            const code = promoInput.value.trim().toUpperCase();
+            
+            const promoCodes = {
+                'MISHKA15': 15,
+                'BEAR2024': 10,
+                'FREE100': 5,
+                'LOVEBEAR': 7
+            };
+
+            if (promoCodes[code]) {
+                attempts += promoCodes[code];
+                updateAttemptsDisplay();
+                promoMessage.textContent = `✅ Промокод активирован! +${promoCodes[code]} попыток`;
+                promoMessage.style.color = '#4caf50';
+                promoInput.value = '';
+            } else {
+                promoMessage.textContent = '❌ Неверный промокод';
+                promoMessage.style.color = '#ff6b6b';
+            }
+        });
+
+        // Обработка enter в поле промокода
+        promoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('applyPromo').click();
+            }
+        });
+
+        // Функции для поддержки и правил
+        window.showSupport = function() {
+            if (tg) {
+                tg.openTelegramLink('https://t.me/your_support_bot');
+            } else {
+                alert('Техподдержка: @your_support_bot');
+            }
+        };
+
+        window.showRules = function() {
+            const rules = `Правила розыгрыша:
+1. У вас есть 15 начальных попыток
+2. Каждая попытка дает 10% шанс на выигрыш
+3. Бесплатная попытка доступна раз в 24 часа
+4. Промокоды дают дополнительные попытки
+5. Призы можно получить в боте @your_bot`;
+            
+            if (tg) {
+                tg.showPopup({
+                    title: 'Правила',
+                    message: rules,
+                    buttons: [{type: 'close'}]
+                });
+            } else {
+                alert(rules);
+            }
+        };
+
+        // Инициализация
+        updateAttemptsDisplay();
+
+        // Проверяем, открыто ли приложение в Telegram
+        if (!tg) {
+            console.log('Демо-режим: приложение запущено не в Telegram');
+        }
+    </script>
+</body>
+  </html>
